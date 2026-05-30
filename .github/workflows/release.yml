@@ -6,8 +6,7 @@ on:
 
 env:
   GODOT_VERSION: 4.6.3
-  EXPORT_NAME: test-project
-  PROJECT_PATH: test-project
+  EXPORT_NAME: music-ecs
 
 jobs:
   export:
@@ -57,14 +56,12 @@ jobs:
         run: |
           mkdir -v -p build/windows/release
           EXPORT_DIR="$(readlink -f build)"
-          cd $PROJECT_PATH
           godot --headless --verbose --export-release "Windows" "$EXPORT_DIR/windows/release/$EXPORT_NAME.exe"  
           
       - name: Windows debug Build
         run: |
           mkdir -v -p build/windows/debug
           EXPORT_DIR="$(readlink -f build)"
-          cd $PROJECT_PATH
           godot --headless --verbose --export-debug "Windows" "$EXPORT_DIR/windows/debug/$EXPORT_NAME.exe"
           
       - name: Upload Artifact

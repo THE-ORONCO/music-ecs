@@ -28,7 +28,7 @@ jobs:
           # Disable fetching history as most of the time it is useless
           filter: tree:0
           fetch-depth: 0
-          lfs: true
+#          lfs: true
       
       #      - uses: actions/setup-dotnet@v4
       #        name: 💽 Setup .NET SDK

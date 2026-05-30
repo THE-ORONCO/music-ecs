@@ -28,6 +28,7 @@ jobs:
         # Disable fetching history as most of the time it is useless
           filter: tree:0
           fetch-depth: 0
+#          lfs: true
 
 #      - uses: actions/setup-dotnet@v4
 #        name: 💽 Setup .NET SDK
@@ -48,12 +49,12 @@ jobs:
           use-dotnet: false
           cache: true
           # Include the Godot Export Templates (the default is false).
-          include-templates: true
+          include-templates: 'true'
 
       - name: 🔬 Verify Setup
         run: |
-#          dotnet --version
           godot --version
+#          dotnet --version
 
 #      - name: 🧑‍🔬 Generate .NET Bindings
 #        run: godot --headless --build-solutions --quit || exit 0

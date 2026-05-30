@@ -47,6 +47,7 @@ metadata/_custom_type_script = "uid://d1hjdlos8d1u6"
 
 [node name="S_TileWobbly" type="Node" parent="Systems/physics" unique_id=1387204666]
 script = ExtResource("5_036b0")
+group = &"physics"
 metadata/_custom_type_script = "uid://bis18lg64t3sj"
 
 [node name="render" type="Node" parent="Systems" unique_id=185649920]

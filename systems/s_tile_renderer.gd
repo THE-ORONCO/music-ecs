@@ -23,7 +23,7 @@ func process(entities: Array[Entity], components: Array, delta: float) -> void:
 
 	_multi_mesh.visible_instance_count = count
 
-	for i in count:
+	for i in range(count):
 		var t: C_Transform2D = transforms[i]
 		if t:
 			_multi_mesh.set_instance_transform_2d(i, t.transform)

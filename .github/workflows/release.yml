@@ -40,27 +40,30 @@ jobs:
           fetch-depth: 0
 #          lfs: true
 
-      - uses: chickensoft-games/setup-godot@v2
-        name: 🤖 Setup Godot
-        with:
-          # Version must include major, minor, and patch, and be >= 4.0.0
-          # Pre-release label is optional.
-          version: 4.6.3 # also valid: 4.0.0.rc1 or 4.0.0 or "global.json", etc
-          # Use .NET-enabled version of Godot (the default is also true).
-          use-dotnet: false
-          cache: true
-          # Include the Godot Export Templates (the default is false).
-          include-templates: true
-
-      - name: Windows release Build
-        run: |
-          mkdir -v -p build/windows/release
-          godot --headless --verbose --export-release "Windows" "build/windows/release/music-ecs.exe"  
+#      - uses: chickensoft-games/setup-godot@v2
+#        name: 🤖 Setup Godot
+#        with:
+#          # Version must include major, minor, and patch, and be >= 4.0.0
+#          # Pre-release label is optional.
+#          version: 4.6.3 # also valid: 4.0.0.rc1 or 4.0.0 or "global.json", etc
+#          # Use .NET-enabled version of Godot (the default is also true).
+#          use-dotnet: false
+#          cache: true
+#          # Include the Godot Export Templates (the default is false).
+#          include-templates: true
           
-      - name: Windows debug Build
-        run: |
-          mkdir -v -p build/windows/debug
-          godot --headless --verbose --export-debug "Windows" "build/windows/debug/music-ecs.exe"
+      - name: export game
+        id: export
+        # Use latest version (see releases for all versions)
+        uses: firebelley/godot-export@v8.0.0
+        with:
+          # Defining all the required inputs
+          godot_executable_download_url: https://godot-releases.nbg1.your-objectstorage.com/4.6.3-stable/Godot_v4.6.3-stable_mono_linux_x86_64.zip
+          godot_export_templates_download_url: https://godot-releases.nbg1.your-objectstorage.com/4.6.3-stable/Godot_v4.6.3-stable_export_templates.tpz
+          relative_project_path: ./
+          archive_output: true
+          verbose: true
+          cache: true
           
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

@@ -17,10 +17,10 @@ jobs:
     #      # Smaller cache size
     #      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
     #      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-    defaults:
-      run:
-        # Use bash shells on all platforms.
-        shell: bash
+#    defaults:
+#      run:
+#        # Use bash shells on all platforms.
+#        shell: bash
     steps:
       - uses: actions/checkout@v4
         name: 🧾 Checkout
@@ -28,6 +28,7 @@ jobs:
           # Disable fetching history as most of the time it is useless
           filter: tree:0
           fetch-depth: 0
+          lfs: true
       
       #      - uses: actions/setup-dotnet@v4
       #        name: 💽 Setup .NET SDK
@@ -55,6 +56,7 @@ jobs:
         run: |
           #          dotnet --version
                godot --version
+
       - uses: godot-gdunit-labs/gdUnit4-action@v1
         with:
           godot-version: 4.6.3

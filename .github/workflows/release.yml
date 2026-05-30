@@ -55,14 +55,12 @@ jobs:
       - name: Windows release Build
         run: |
           mkdir -v -p build/windows/release
-          EXPORT_DIR="$(readlink -f build)"
-          godot --headless --verbose --export-release "Windows" "./build/windows/release/music-ecs.exe"  
+          godot --headless --verbose --export-release "Windows" "build/windows/release/music-ecs.exe"  
           
       - name: Windows debug Build
         run: |
           mkdir -v -p build/windows/debug
-          EXPORT_DIR="$(readlink -f build)"
-          godot --headless --verbose --export-debug "Windows" "./build/windows/debug/music-ecs.exe"
+          godot --headless --verbose --export-debug "Windows" "build/windows/debug/music-ecs.exe"
           
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

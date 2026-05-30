@@ -51,7 +51,12 @@ jobs:
 #          cache: true
 #          # Include the Godot Export Templates (the default is false).
 #          include-templates: true
-          
+
+        # hacky workaround for bad imports of the main scene
+      - run: |
+          godot --headless --import --verbose
+        continue-on-error: true
+      
       - name: 📦 export release version
         id: export_release
         # Use latest version (see releases for all versions)

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="music-ecs"
-run/main_scene="uid://de1smbfif3g8c"
+run/main_scene="uid://bu6at8m56x0nd"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 

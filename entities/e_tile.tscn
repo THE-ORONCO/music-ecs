@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://dkbh2oadf1yoa"]
+
+[ext_resource type="Script" uid="uid://biww2bqrh6fup" path="res://entities/e_tile.gd" id="1_a3cqo"]
+[ext_resource type="Script" uid="uid://b6k13gc2m4e5s" path="res://addons/gecs/ecs/component.gd" id="2_aqbfx"]
+[ext_resource type="Script" uid="uid://cigy24oaw02cb" path="res://components/c_tile.gd" id="3_niunk"]
+[ext_resource type="Script" uid="uid://d3rhio4phhhm2" path="res://components/c_grid_position_2d.gd" id="4_k75ti"]
+[ext_resource type="Script" uid="uid://kg5kguk5km34" path="res://components/c_transform_2d.gd" id="5_gv825"]
+[ext_resource type="Script" uid="uid://dj8xwwnni1q2d" path="res://components/c_vertical_wobble.gd" id="6_mqygu"]
+
+[sub_resource type="Resource" id="Resource_4gnau"]
+script = ExtResource("3_niunk")
+metadata/_custom_type_script = "uid://cigy24oaw02cb"
+
+[sub_resource type="Resource" id="Resource_shg8f"]
+script = ExtResource("4_k75ti")
+metadata/_custom_type_script = "uid://d3rhio4phhhm2"
+
+[sub_resource type="Resource" id="Resource_sx7br"]
+script = ExtResource("5_gv825")
+metadata/_custom_type_script = "uid://kg5kguk5km34"
+
+[sub_resource type="Resource" id="Resource_qc37e"]
+script = ExtResource("6_mqygu")
+magnitude = 0.5
+position_offset_influence = 0.01
+metadata/_custom_type_script = "uid://dj8xwwnni1q2d"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4nka5"]
+size = Vector2(16, 16)
+
+[node name="E_Tile" type="Area2D" unique_id=1322428995]
+script = ExtResource("1_a3cqo")
+component_resources = Array[ExtResource("2_aqbfx")]([SubResource("Resource_4gnau"), SubResource("Resource_shg8f"), SubResource("Resource_sx7br"), SubResource("Resource_qc37e")])
+
+[node name="Shape" type="CollisionShape2D" parent="." unique_id=957942114]
+shape = SubResource("RectangleShape2D_4nka5")

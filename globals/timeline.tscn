@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://m4d20640v0pt"]
+
+[ext_resource type="Script" uid="uid://dcywuv1urldyl" path="res://globals/timeline.gd" id="1_g22ms"]
+
+[node name="Timeline" type="Node" unique_id=1186968839]
+script = ExtResource("1_g22ms")
+metadata/_custom_type_script = "uid://dcywuv1urldyl"
+
+[node name="Timer" type="Timer" parent="." unique_id=737077124]

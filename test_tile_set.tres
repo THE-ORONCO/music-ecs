@@ -1,0 +1,11 @@
+[gd_resource type="TileSet" format=3 uid="uid://bbec11riil5lf"]
+
+[ext_resource type="PackedScene" uid="uid://dkbh2oadf1yoa" path="res://entities/e_tile.tscn" id="1_efw2a"]
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_wbwa6"]
+resource_name = "floor"
+scenes/2/scene = ExtResource("1_efw2a")
+scenes/2/display_placeholder = true
+
+[resource]
+sources/0 = SubResource("TileSetScenesCollectionSource_wbwa6")

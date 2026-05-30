@@ -1,0 +1,2 @@
+- use [godot-setup](https://github.com/chickensoft-games/setup-godot/tree/main) to setup godot on the runner
+- 

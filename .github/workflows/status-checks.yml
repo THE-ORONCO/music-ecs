@@ -47,7 +47,6 @@ jobs:
           # Use .NET-enabled version of Godot (the default is also true).
           use-dotnet: false
           cache: true
-          
           # Include the Godot Export Templates (the default is false).
           include-templates: true
 
@@ -61,5 +60,3 @@ jobs:
 
 #      - name: 🦺 Build Projects
 #        run: dotnet build --configuration Release
-
-      # Do whatever you want!

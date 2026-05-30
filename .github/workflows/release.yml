@@ -64,7 +64,13 @@ jobs:
           archive_output: true
           verbose: true
           cache: true
-      
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: ${{ steps.export_release.outputs.archive_directory }}
+
       - name: 🐛 export debug version
         id: export_debug
         # Use latest version (see releases for all versions)
@@ -82,9 +88,9 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows
-          path: build/windows
-
+          name: windows-debug
+          path: ${{ steps.export_debug.outputs.archive_directory }}
+          
 #  export-windows:
 #    name: Windows Export
 #    runs-on: ubuntu-24.04  # Use 24.04 with godot 4

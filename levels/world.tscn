@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://ia35nbs170dc"]
 
-[ext_resource type="Script" uid="uid://cdnqhfbtk85kt" path="res://world.gd" id="1_tlwt5"]
+[ext_resource type="Script" uid="uid://cdnqhfbtk85kt" path="res://levels/world.gd" id="1_tlwt5"]
 [ext_resource type="Script" uid="uid://b3vi2ingux88g" path="res://addons/gecs/lib/system_group.gd" id="2_tlwt5"]
 [ext_resource type="Script" uid="uid://bjnkee1ltgbrm" path="res://tiles/custom_tilemap_layer.gd" id="3_036b0"]
 [ext_resource type="TileSet" uid="uid://bbec11riil5lf" path="res://test_tile_set.tres" id="3_aqk2v"]

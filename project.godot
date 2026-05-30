@@ -45,6 +45,18 @@ window/stretch/scale_mode="integer"
 
 enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg", "res://addons/gecs/plugin.cfg", "res://addons/limbo_console/plugin.cfg", "res://addons/ridiculous_coding/plugin.cfg")
 
+[file_customization]
+
+folder_colors={
+"res://addons/": "gray",
+"res://components/": "blue",
+"res://entities/": "green",
+"res://levels/": "purple",
+"res://observers/": "orange",
+"res://systems/": "red",
+"res://test/": "pink"
+}
+
 [gdunit4]
 
 settings/test/test_discovery=true

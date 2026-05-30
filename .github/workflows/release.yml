@@ -1,0 +1,185 @@
+﻿name: ♨️ Release
+on: 
+  push:
+    branches:
+      - main
+
+env:
+  GODOT_VERSION: 4.6.3
+  EXPORT_NAME: test-project
+  PROJECT_PATH: test-project
+
+jobs:
+  export:
+    name: export for all platforms
+    runs-on: ubuntu-24.04
+#    strategy:
+#      # Don't cancel other OS runners if one fails.
+#      fail-fast: false
+#      matrix:
+#        # Put the operating systems you want to run on here.
+#        target: [ "Windows Desktop", "Linux/X11", "Web", "macOS" ]
+#        include:
+#          - expath: windows
+#            target: "Windows Desktop"
+#          - expath: linux
+#            target: "Linux/X11"
+#          - expath: web
+#            target: "Web"
+#          - expath: mac
+#            target: "macOS"
+    defaults:
+      run:
+        # Use bash shells on all platforms.
+        shell: bash
+    steps:
+      - name: 🧾 Checkout
+        uses: actions/checkout@v4
+        with:
+          # Disable fetching history as most of the time it is useless
+          filter: tree:0
+          fetch-depth: 0
+          lfs: true
+
+      - uses: chickensoft-games/setup-godot@v2
+        name: 🤖 Setup Godot
+        with:
+          # Version must include major, minor, and patch, and be >= 4.0.0
+          # Pre-release label is optional.
+          version: 4.6.3 # also valid: 4.0.0.rc1 or 4.0.0 or "global.json", etc
+          # Use .NET-enabled version of Godot (the default is also true).
+          use-dotnet: false
+          cache: true
+          # Include the Godot Export Templates (the default is false).
+          include-templates: true
+
+      - name: Windows release Build
+        run: |
+          mkdir -v -p build/windows/release
+          EXPORT_DIR="$(readlink -f build)"
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Windows" "$EXPORT_DIR/windows/release/$EXPORT_NAME.exe"  
+          
+      - name: Windows debug Build
+        run: |
+          mkdir -v -p build/windows/debug
+          EXPORT_DIR="$(readlink -f build)"
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-debug "Windows" "$EXPORT_DIR/windows/debug/$EXPORT_NAME.exe"
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: build/windows
+
+#  export-windows:
+#    name: Windows Export
+#    runs-on: ubuntu-24.04  # Use 24.04 with godot 4
+#    
+#    steps:
+#      - name: 🧾 Checkout
+#        uses: actions/checkout@v4  
+#        with:
+#          # Disable fetching history as most of the time it is useless
+#          filter: tree:0
+#          fetch-depth: 0
+#          lfs: true
+#
+#      - name: Setup
+#        run: |
+#          mkdir -v -p ~/.local/share/godot/export_templates/
+#          mkdir -v -p ~/.config/
+#          mv /root/.config/godot ~/.config/godot
+#          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+#      - name: Windows Build
+#        run: |
+#          mkdir -v -p build/windows
+#          EXPORT_DIR="$(readlink -f build)"
+#          cd $PROJECT_PATH
+#          godot --headless --verbose --export-release "Windows Desktop" "$EXPORT_DIR/windows/$EXPORT_NAME.exe"
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: windows
+#          path: build/windows
+#
+#  export-linux:
+#    name: Linux Export
+#    runs-on: ubuntu-24.04  # Use 24.04 with godot 4
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          lfs: true
+#      - name: Setup
+#        run: |
+#          mkdir -v -p ~/.local/share/godot/export_templates/
+#          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+#      - name: Linux Build
+#        run: |
+#          mkdir -v -p build/linux
+#          EXPORT_DIR="$(readlink -f build)"
+#          cd $PROJECT_PATH
+#          godot --headless --verbose --export-release "Linux/X11" "$EXPORT_DIR/linux/$EXPORT_NAME.x86_64"
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: linux
+#          path: build/linux
+#
+#  export-web:
+#    name: Web Export
+#    runs-on: ubuntu-24.04  # Use 24.04 with godot 4
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          lfs: true
+#      - name: Setup
+#        run: |
+#          mkdir -v -p ~/.local/share/godot/export_templates/
+#          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+#      - name: Web Build
+#        run: |
+#          mkdir -v -p build/web
+#          EXPORT_DIR="$(readlink -f build)"
+#          cd $PROJECT_PATH
+#          godot --headless --verbose --export-release "Web" "$EXPORT_DIR/web/index.html"
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: web
+#          path: build/web
+#      - name: Install rsync 📚
+#        run: |
+#          apt-get update && apt-get install -y rsync
+#      - name: Deploy to GitHub Pages 🚀
+#        uses: JamesIves/github-pages-deploy-action@releases/v4
+#        with:
+#          branch: gh-pages # The branch the action should deploy to.
+#          folder: build/web # The folder the action should deploy.
+#
+#  export-mac:
+#    name: Mac Export
+#    runs-on: ubuntu-24.04  # Use 24.04 with godot 4
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          lfs: true
+#      - name: Setup
+#        run: |
+#          mkdir -v -p ~/.local/share/godot/export_templates/
+#          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+#      - name: Mac Build
+#        run: |
+#          mkdir -v -p build/mac
+#          EXPORT_DIR="$(readlink -f build)"
+#          cd $PROJECT_PATH
+#          godot --headless --verbose --export-release "macOS" "$EXPORT_DIR/mac/$EXPORT_NAME.zip"
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: mac
+#          path: build/mac

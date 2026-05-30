@@ -56,13 +56,13 @@ jobs:
         run: |
           mkdir -v -p build/windows/release
           EXPORT_DIR="$(readlink -f build)"
-          godot --headless --verbose --export-release "Windows" "$EXPORT_DIR/windows/release/$EXPORT_NAME.exe"  
+          godot --headless --verbose --export-release "Windows" "./build/windows/release/$EXPORT_NAME.exe"  
           
       - name: Windows debug Build
         run: |
           mkdir -v -p build/windows/debug
           EXPORT_DIR="$(readlink -f build)"
-          godot --headless --verbose --export-debug "Windows" "$EXPORT_DIR/windows/debug/$EXPORT_NAME.exe"
+          godot --headless --verbose --export-debug "Windows" "./build/windows/debug/$EXPORT_NAME.exe"
           
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

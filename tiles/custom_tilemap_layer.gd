@@ -2,7 +2,7 @@ extends TileMapLayer
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+func _init() -> void:
 	child_entered_tree.connect(_fix_owner)
 
 

@@ -11,7 +11,7 @@ func setup():
 	_multi_mesh = multi_mesh_instance.multimesh
 
 func query() -> QueryBuilder:
-	return q.with_all([C_Transform2D, C_Tile]).iterate([C_Transform2D, C_Tile])
+	return q.with_all([C_Transform2D, C_Tile]).iterate([C_Transform2D])
 
 
 func process(entities: Array[Entity], components: Array, delta: float) -> void:

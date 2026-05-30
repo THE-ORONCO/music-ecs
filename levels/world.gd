@@ -23,7 +23,8 @@ func _physics_process(delta: float) -> void:
 		ECS.process(delta, "physics")
 
 func _process(delta: float) -> void:
-	ECS.process(delta, "render")
+	if _do_process:
+		ECS.process(delta, "render")
 
 func _create_world() -> void:
 	world = World.new()

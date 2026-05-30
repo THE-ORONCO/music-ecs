@@ -415,7 +415,7 @@ func _handle(delta: float) -> void:
 		return
 	# Always measure time when the Performance monitor is on, even without ECS.debug,
 	# so the monitor callable has a live value to return.
-	var measure_time := ECS.debug or performance_monitor
+	var measure_time: bool = ECS.debug or performance_monitor
 	var start_time_usec := 0
 	if measure_time:
 		start_time_usec = Time.get_ticks_usec()

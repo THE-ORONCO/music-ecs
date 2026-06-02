@@ -2,7 +2,7 @@ name: 🫶 der coolste workflow
 on:
   push: 
     paths:
-      - /assets
+      - /assets/**
 
 jobs:
   convert-images:

@@ -13,6 +13,9 @@ jobs:
         with: 
           fetch-depth: '1'
       
+      - name: Install ImageMagick
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
+      
       - name: Convert images
         run: |
           mkdir -p "out"
@@ -38,6 +41,7 @@ jobs:
               continue
             fi
           done
+  
     
       - name: Export images
         uses: actions/upload-artifact@v7

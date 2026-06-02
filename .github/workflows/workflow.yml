@@ -15,5 +15,32 @@ jobs:
       
       - name: Convert images
         run: |
-          ls assets
+          mkdir -p "out"
+          
+          for src in "assets"/*; do
+            # skip directories and already-png files
+            [ -f "$src" ] || continue
+            ext="${src##*.}"
+            if [[ "${ext,,}" == "png" ]]; then
+              continue
+            fi
+            if [[ "${ext,,}" == "import" ]]; then
+              continue
+            fi
+            
+            base="$(basename "$src")"
+            name="${base%.*}"
+            out="out/${name}.png"
+            
+            # run convert; if it fails, print a warning and continue
+            if ! convert "$src" "$out"; then
+              printf 'Warning: failed to convert %s\n' "$src" >&2
+              continue
+            fi
+          done
     
+      - name: Export images
+        uses: actions/upload-artifact@v7
+        with: 
+          path: out
+          

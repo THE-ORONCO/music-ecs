@@ -1,0 +1,20 @@
+name: 🫶 der coolste workflow
+on:
+  push: 
+    paths:
+      - /assets
+
+jobs:
+  convert-images:
+    name: Konvertiere alle Bilder
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out se repo
+        uses: actions/checkout@v6
+        with: 
+          fetch-depth: '1'
+      
+      - name: Convert images
+        run: |
+          ls assets
+    

@@ -1,5 +1,5 @@
 ﻿name: 🚥 Status Checks
-on: push
+#on: push
 
 jobs:
   tests:

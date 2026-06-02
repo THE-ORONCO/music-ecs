@@ -1,8 +1,7 @@
 name: 🫶 der coolste workflow
-on:
-  push: 
-    paths:
-      - /assets/**
+on: push
+#    paths:
+#      - /assets/**
 
 jobs:
   convert-images:

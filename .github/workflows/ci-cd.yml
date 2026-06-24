@@ -97,9 +97,11 @@ jobs:
         run: |
           echo "godot --version:"
           godot --version
-          echo "Export templates path:"
-          ls -la ~/.local/share/godot/export_templates/ 2>/dev/null || echo "No export_templates dir"
-          godot --dump-extension-api 2>&1 | head -5 || true
+          echo "Export templates directory:"
+          ls -laR ~/.local/share/godot/export_templates/ 2>/dev/null || echo "No export_templates dir"
+          echo "---"
+          echo "Checking for Windows templates specifically:"
+          ls -la ~/.local/share/godot/export_templates/4.6.3.stable/*windows* 2>/dev/null || echo "No Windows templates found"
       - name: Export Windows
         run: |
           mkdir -p build/windows

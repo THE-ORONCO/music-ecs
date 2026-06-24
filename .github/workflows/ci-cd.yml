@@ -34,7 +34,7 @@ jobs:
         run: |
           godot --headless --path . -s \
             res://addons/gdUnit4/bin/GdUnitCmdTool.gd \
-            -a res://test/unit/
+            -a res://test/unit/ --ignoreHeadlessMode
 
   integration-tests:
     name: Integration tests
@@ -59,7 +59,7 @@ jobs:
         run: |
           godot --headless --path . -s \
             res://addons/gdUnit4/bin/GdUnitCmdTool.gd \
-            -a res://test/integration/
+            -a res://test/integration/ --ignoreHeadlessMode
 
   build-windows:
     name: Windows (${{ matrix.mode }})

@@ -145,7 +145,7 @@ jobs:
 
   deploy-itchio:
     name: Deploy to itch.io
-    needs: [build-windows]
+    needs: [build-windows, build-linux]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
@@ -153,14 +153,25 @@ jobs:
         with:
           name: windows-release
           path: build/windows
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux-release
+          path: build/linux
       - name: Install butler
         run: |
           wget -q https://broth.itch.ovh/butler/linux-amd64/LATEST.zip -O /tmp/butler.zip
           unzip -q /tmp/butler.zip -d /tmp/butler
-      - name: Push to itch.io
+      - name: Push Windows to itch.io
         env:
           BUTLER_API_KEY: ${{ secrets.ITCH_IO_API_KEY }}
         run: |
           /tmp/butler/butler push build/windows \
             the-oronco/journey-through-the-feywild:windows \
+            --userversion "${GITHUB_REF_NAME#v}"
+      - name: Push Linux to itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.ITCH_IO_API_KEY }}
+        run: |
+          /tmp/butler/butler push build/linux \
+            the-oronco/journey-through-the-feywild:linux \
             --userversion "${GITHUB_REF_NAME#v}"

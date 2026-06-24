@@ -159,7 +159,7 @@ jobs:
           path: build/linux
       - name: Install butler
         run: |
-          wget -q https://broth.itch.ovh/butler/linux-amd64/LATEST.zip -O /tmp/butler.zip
+          wget -q https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default -O /tmp/butler.zip
           unzip -q /tmp/butler.zip -d /tmp/butler
       - name: Push Windows to itch.io
         env:

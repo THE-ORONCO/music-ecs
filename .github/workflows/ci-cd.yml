@@ -8,7 +8,7 @@ on:
     branches: [main]
 
 env:
-  GODOT_VERSION: 4.6.3
+  GODOT_VERSION: 4.6
 
 jobs:
   unit-tests:
@@ -21,10 +21,18 @@ jobs:
           version: ${{ env.GODOT_VERSION }}
           use-dotnet: false
           include-templates: true
+      - name: Cache .godot/
+        uses: actions/cache@v4
+        id: godot-cache
+        with:
+          path: .godot/
+          key: godot-import-${{ hashFiles('project.godot', 'export_presets.cfg') }}-${{ runner.os }}
+      - name: Import project
+        if: steps.godot-cache.outputs.cache-hit != 'true'
+        run: godot --headless --import --path .
       - name: Run unit tests
         run: |
-          godot --headless --path . -s -d \
-            --remote-debug tcp://127.0.0.1:0 \
+          godot --headless --path . -s \
             res://addons/gdUnit4/bin/GdUnitCmdTool.gd \
             -a res://test/unit/
 
@@ -39,10 +47,17 @@ jobs:
           version: ${{ env.GODOT_VERSION }}
           use-dotnet: false
           include-templates: true
+      - uses: actions/cache@v4
+        id: godot-cache
+        with:
+          path: .godot/
+          key: godot-import-${{ hashFiles('project.godot', 'export_presets.cfg') }}-${{ runner.os }}
+      - name: Import project
+        if: steps.godot-cache.outputs.cache-hit != 'true'
+        run: godot --headless --import --path .
       - name: Run integration tests
         run: |
-          godot --headless --path . -s -d \
-            --remote-debug tcp://127.0.0.1:0 \
+          godot --headless --path . -s \
             res://addons/gdUnit4/bin/GdUnitCmdTool.gd \
             -a res://test/integration/
 
@@ -60,6 +75,14 @@ jobs:
           version: ${{ env.GODOT_VERSION }}
           use-dotnet: false
           include-templates: true
+      - uses: actions/cache@v4
+        id: godot-cache
+        with:
+          path: .godot/
+          key: godot-import-${{ hashFiles('project.godot', 'export_presets.cfg') }}-${{ runner.os }}
+      - name: Import project
+        if: steps.godot-cache.outputs.cache-hit != 'true'
+        run: godot --headless --import --path .
       - name: Export Windows
         run: |
           mkdir -p build/windows

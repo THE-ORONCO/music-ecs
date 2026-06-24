@@ -74,31 +74,23 @@ jobs:
   build-windows:
     name: Windows (${{ matrix.mode }})
     needs: [integration-tests]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         mode: [debug, release]
-    runs-on: ${{ matrix.mode == 'release' && 'windows-latest' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: chickensoft-games/setup-godot@v2
+      - name: Export game
+        id: export
+        uses: firebelley/godot-export@v8.0.0
         with:
-          version: ${{ env.GODOT_VERSION }}
-          use-dotnet: false
-          include-templates: true
-      - uses: actions/cache@v4
-        id: godot-cache
-        with:
-          path: .godot/
-          key: godot-import-${{ hashFiles('project.godot', 'export_presets.cfg') }}-${{ runner.os }}
-      - name: Import project
-        if: steps.godot-cache.outputs.cache-hit != 'true'
-        run: godot --headless --import --path .
-      - name: Export Windows (${{ matrix.mode }})
-        shell: bash
-        run: |
-          mkdir -p build/windows
-          godot --headless --export-${{ matrix.mode }} "Windows" \
-            build/windows/music-ecs-${{ matrix.mode }}.exe
+          godot_executable_download_url: github.com/godotengine/godot/releases/download/4.6.3-stable/Godot_v4.6.3-stable_linux.x86_64.zip
+          godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.6.3-stable/Godot_v4.6.3-stable_export_templates.tpz
+          relative_project_path: ./
+          presets_to_export: Windows
+          export_debug: ${{ matrix.mode == 'debug' }}
+          relative_export_path: build/windows
+          cache: true
       - uses: actions/upload-artifact@v4
         with:
           name: windows-${{ matrix.mode }}

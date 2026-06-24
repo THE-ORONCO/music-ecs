@@ -1,0 +1,126 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main, release]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+env:
+  GODOT_VERSION: 4.6
+
+jobs:
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: true
+      - name: Run unit tests
+        run: |
+          godot --headless --path . -s -d \
+            --remote-debug tcp://127.0.0.1:0 \
+            res://addons/gdUnit4/bin/GdUnitCmdTool.gd \
+            -a res://test/unit/
+
+  integration-tests:
+    name: Integration tests
+    needs: [unit-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: true
+      - name: Run integration tests
+        run: |
+          godot --headless --path . -s -d \
+            --remote-debug tcp://127.0.0.1:0 \
+            res://addons/gdUnit4/bin/GdUnitCmdTool.gd \
+            -a res://test/integration/
+
+  build-windows:
+    name: Windows (${{ matrix.mode }})
+    needs: [integration-tests]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mode: [debug, release]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: true
+      - name: Export Windows
+        run: |
+          mkdir -p build/windows
+          godot --headless --export-${{ matrix.mode }} "Windows" \
+            build/windows/music-ecs-${{ matrix.mode }}.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-${{ matrix.mode }}
+          path: build/windows/
+
+  build-macos:
+    name: macOS (${{ matrix.mode }})
+    needs: [integration-tests]
+    if: false
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mode: [debug, release]
+    steps:
+      - run: echo "macOS build disabled"
+
+  build-linux:
+    name: Linux (${{ matrix.mode }})
+    needs: [integration-tests]
+    if: false
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mode: [debug, release]
+    steps:
+      - run: echo "Linux build disabled"
+
+  build-web:
+    name: Web (${{ matrix.mode }})
+    needs: [integration-tests]
+    if: false
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mode: [debug, release]
+    steps:
+      - run: echo "Web build disabled"
+
+  deploy-itchio:
+    name: Deploy to itch.io
+    needs: [build-windows]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-release
+          path: build/windows
+      - name: Install butler
+        run: |
+          wget -q https://broth.itch.ovh/butler/linux-amd64/LATEST.zip -O /tmp/butler.zip
+          unzip -q /tmp/butler.zip -d /tmp/butler
+      - name: Push to itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.ITCH_IO_API_KEY }}
+        run: |
+          /tmp/butler/butler push build/windows \
+            the-oronco/journey-through-the-feywild:windows \
+            --userversion "${GITHUB_REF_NAME#v}"

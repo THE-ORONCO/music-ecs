@@ -98,7 +98,7 @@ jobs:
           # Clear any stale editor cache that might interfere
           rm -rf ~/.local/share/godot/editor_data
           mkdir -p build/windows
-          godot --headless --verbose --export-${{ matrix.mode }} "Windows" \
+          godot --headless --export-${{ matrix.mode }} "Windows" \
             build/windows/music-ecs-${{ matrix.mode }}.exe
       - uses: actions/upload-artifact@v4
         with:

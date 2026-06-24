@@ -74,10 +74,10 @@ jobs:
   build-windows:
     name: Windows (${{ matrix.mode }})
     needs: [integration-tests]
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         mode: [debug, release]
+    runs-on: ${{ matrix.mode == 'release' && 'windows-latest' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
       - uses: chickensoft-games/setup-godot@v2
@@ -93,10 +93,9 @@ jobs:
       - name: Import project
         if: steps.godot-cache.outputs.cache-hit != 'true'
         run: godot --headless --import --path .
-      - name: Export Windows
+      - name: Export Windows (${{ matrix.mode }})
+        shell: bash
         run: |
-          # Clear any stale editor cache that might interfere
-          rm -rf ~/.local/share/godot/editor_data
           mkdir -p build/windows
           godot --headless --export-${{ matrix.mode }} "Windows" \
             build/windows/music-ecs-${{ matrix.mode }}.exe

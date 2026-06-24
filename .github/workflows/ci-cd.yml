@@ -93,10 +93,17 @@ jobs:
       - name: Import project
         if: steps.godot-cache.outputs.cache-hit != 'true'
         run: godot --headless --import --path .
+      - name: List export templates
+        run: |
+          echo "godot --version:"
+          godot --version
+          echo "Export templates path:"
+          ls -la ~/.local/share/godot/export_templates/ 2>/dev/null || echo "No export_templates dir"
+          godot --dump-extension-api 2>&1 | head -5 || true
       - name: Export Windows
         run: |
           mkdir -p build/windows
-          godot --headless --export-${{ matrix.mode }} "Windows" \
+          xvfb-run godot --verbose --export-${{ matrix.mode }} "Windows" \
             build/windows/music-ecs-${{ matrix.mode }}.exe
       - uses: actions/upload-artifact@v4
         with:

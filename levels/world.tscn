@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://b3vi2ingux88g" path="res://addons/gecs/lib/system_group.gd" id="4_drwxn"]
 [ext_resource type="Script" uid="uid://f3pbbwsyhgp7" path="res://systems/s_timeline_progressor.gd" id="5_rmkky"]
 [ext_resource type="Script" uid="uid://d1hjdlos8d1u6" path="res://observers/o_sync_spawn_position.gd" id="6_epu3l"]
-[ext_resource type="Texture2D" uid="uid://xjwya318vxtt" path="res://icon_16x16.png" id="6_vons5"]
+[ext_resource type="Texture2D" uid="uid://xjwya318vxtt" path="res://assets/icon_16x16.png" id="6_vons5"]
 [ext_resource type="Script" uid="uid://bis18lg64t3sj" path="res://systems/s_tile_wobbly.gd" id="7_lqn8c"]
 [ext_resource type="Script" uid="uid://d3xrkobfm3e6y" path="res://systems/s_tile_renderer.gd" id="8_08uri"]
 

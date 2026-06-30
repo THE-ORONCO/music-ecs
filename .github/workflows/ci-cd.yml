@@ -1,5 +1,8 @@
+# CI/CD pipeline for the Godot project.
+# Runs tests, exports builds, and deploys tagged releases to itch.io.
 name: CI/CD
 
+# Trigger on pushes to main/release branches, version tags, and PRs to main.
 on:
   push:
     branches: [main, release]
@@ -11,36 +14,47 @@ env:
   GODOT_VERSION: 4.6.3
 
 jobs:
+  # ── Unit tests ────────────────────────────────────────────────────────────
+  # Fastest feedback: run unit tests first.
   unit-tests:
     name: Unit tests
     runs-on: ubuntu-latest
     steps:
+      # Check out the repository so the runner has the source code.
       - uses: actions/checkout@v7
+      # Install the Godot engine (headless, no .NET) on the runner.
       - uses: chickensoft-games/setup-godot@v2
         with:
           version: ${{ env.GODOT_VERSION }}
           use-dotnet: false
           include-templates: true
+      # Cache the .godot/ import directory so subsequent runs skip re-importing assets.
       - name: Cache .godot/
         uses: actions/cache@v6
         id: godot-cache
         with:
           path: .godot/
           key: godot-import-${{ hashFiles('project.godot', 'export_presets.cfg') }}-${{ runner.os }}
+      # Import project assets (only when cache missed) so that Godot has the
+      # .godot/ folder ready before running tests.
       - name: Import project
         if: steps.godot-cache.outputs.cache-hit != 'true'
         run: godot --headless --import --path .
+      # Run GdUnit4 unit tests inside Godot's headless mode.
       - name: Run unit tests
         run: |
           godot --headless --path . -s \
             res://addons/gdUnit4/bin/GdUnitCmdTool.gd \
             -a res://test/unit/ --ignoreHeadlessMode
+      # Upload test reports (JUnit XML / screenshots) regardless of pass/fail.
       - uses: actions/upload-artifact@v7.0.1
         if: always()
         with:
           name: unit-test-reports
           path: reports/
 
+  # ── Integration tests ─────────────────────────────────────────────────────
+  # Run after unit tests pass; shares the same caching setup.
   integration-tests:
     name: Integration tests
     needs: [unit-tests]
@@ -60,6 +74,7 @@ jobs:
       - name: Import project
         if: steps.godot-cache.outputs.cache-hit != 'true'
         run: godot --headless --import --path .
+      # Run GdUnit4 integration tests.
       - name: Run integration tests
         run: |
           godot --headless --path . -s \
@@ -71,6 +86,8 @@ jobs:
           name: integration-test-reports
           path: reports/
 
+  # ── Build: Windows ────────────────────────────────────────────────────────
+  # Export the game for Windows in both debug and release configurations.
   build-windows:
     name: Windows (${{ matrix.mode }})
     needs: [integration-tests]
@@ -80,6 +97,7 @@ jobs:
         mode: [debug, release]
     steps:
       - uses: actions/checkout@v7
+      # Use the firebelley Godot export action to build the Windows preset.
       - name: Export game
         id: export
         uses: firebelley/godot-export@v8.0.0
@@ -91,11 +109,14 @@ jobs:
           export_debug: ${{ matrix.mode == 'debug' }}
           relative_export_path: build/windows
           cache: true
+      # Upload the exported build as an artifact so later jobs can download it.
       - uses: actions/upload-artifact@v7.0.1
         with:
           name: windows-${{ matrix.mode }}
           path: build/windows/
 
+  # ── Build: macOS ──────────────────────────────────────────────────────────
+  # Currently disabled via `if: false`.
   build-macos:
     name: macOS (${{ matrix.mode }})
     needs: [integration-tests]
@@ -107,6 +128,8 @@ jobs:
     steps:
       - run: echo "macOS build disabled"
 
+  # ── Build: Linux ──────────────────────────────────────────────────────────
+  # Export the game for Linux in both debug and release configurations.
   build-linux:
     name: Linux (${{ matrix.mode }})
     needs: [integration-tests]
@@ -132,6 +155,8 @@ jobs:
           name: linux-${{ matrix.mode }}
           path: build/linux/
 
+  # ── Build: Web ────────────────────────────────────────────────────────────
+  # Currently disabled via `if: false`.
   build-web:
     name: Web (${{ matrix.mode }})
     needs: [integration-tests]
@@ -143,24 +168,31 @@ jobs:
     steps:
       - run: echo "Web build disabled"
 
+  # ── Deploy to itch.io ────────────────────────────────────────────────────
+  # Only runs on version tags (e.g. v1.0.0). Downloads the release builds
+  # from previous jobs and pushes them to itch.io via butler.
   deploy-itchio:
     name: Deploy to itch.io
     needs: [build-windows, build-linux]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
+      # Download the Windows release build artifact.
       - uses: actions/download-artifact@v4
         with:
           name: windows-release
           path: build/windows
+      # Download the Linux release build artifact.
       - uses: actions/download-artifact@v4
         with:
           name: linux-release
           path: build/linux
+      # Install itch.io's butler CLI for uploading builds.
       - name: Install butler
         run: |
           wget -q https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default -O /tmp/butler.zip
           unzip -q /tmp/butler.zip -d /tmp/butler
+      # Push the Windows build to the itch.io project page.
       - name: Push Windows to itch.io
         env:
           BUTLER_API_KEY: ${{ secrets.ITCH_IO_API_KEY }}
@@ -168,6 +200,7 @@ jobs:
           /tmp/butler/butler push build/windows \
             the-oronco/journey-through-the-feywild:windows \
             --userversion "${GITHUB_REF_NAME#v}"
+      # Push the Linux build to the itch.io project page.
       - name: Push Linux to itch.io
         env:
           BUTLER_API_KEY: ${{ secrets.ITCH_IO_API_KEY }}
